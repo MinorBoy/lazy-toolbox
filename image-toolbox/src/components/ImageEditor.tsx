@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Upload, Download, RotateCw, FlipHorizontal, FlipVertical, Sun, Contrast, Droplets } from 'lucide-react'
 import {
   fileToBase64,
@@ -31,10 +31,43 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
       const imageData = await fileToBase64(file)
       setSelectedImage(imageData)
       setEditedImage(imageData)
+      setBrightness(100)
+      setContrast(100)
+      setSaturation(100)
     } catch (err) {
       alert('图片加载失败')
     }
   }, [])
+
+  // 实时预览滤镜效果
+  useEffect(() => {
+    if (!selectedImage) return
+
+    const applyFiltersRealtime = async () => {
+      try {
+        let result = selectedImage
+        if (brightness !== 100) {
+          result = await adjustImageBrightness(result, brightness)
+        }
+        if (contrast !== 100) {
+          result = await adjustImageContrast(result, contrast)
+        }
+        if (saturation !== 100) {
+          result = await adjustImageSaturation(result, saturation)
+        }
+        setEditedImage(result)
+      } catch (err) {
+        console.error('滤镜应用失败:', err)
+      }
+    }
+
+    // 使用防抖优化性能
+    const timeoutId = setTimeout(() => {
+      applyFiltersRealtime()
+    }, 100)
+
+    return () => clearTimeout(timeoutId)
+  }, [selectedImage, brightness, contrast, saturation])
 
   const handleRotate = useCallback(async () => {
     if (!editedImage) return
@@ -42,6 +75,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
     try {
       const rotated = await rotateImage(editedImage, 90)
       setEditedImage(rotated)
+      setSelectedImage(rotated) // 更新基准图片
     } catch (err) {
       alert('旋转失败')
     } finally {
@@ -55,6 +89,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
     try {
       const flipped = await flipImage(editedImage, 'horizontal')
       setEditedImage(flipped)
+      setSelectedImage(flipped) // 更新基准图片
     } catch (err) {
       alert('翻转失败')
     } finally {
@@ -68,34 +103,13 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
     try {
       const flipped = await flipImage(editedImage, 'vertical')
       setEditedImage(flipped)
+      setSelectedImage(flipped) // 更新基准图片
     } catch (err) {
       alert('翻转失败')
     } finally {
       setLoading(false)
     }
   }, [editedImage])
-
-  const applyFilters = useCallback(async () => {
-    if (!selectedImage) return
-    setLoading(true)
-    try {
-      let result = selectedImage
-      if (brightness !== 100) {
-        result = await adjustImageBrightness(result, brightness)
-      }
-      if (contrast !== 100) {
-        result = await adjustImageContrast(result, contrast)
-      }
-      if (saturation !== 100) {
-        result = await adjustImageSaturation(result, saturation)
-      }
-      setEditedImage(result)
-    } catch (err) {
-      alert('滤镜应用失败')
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedImage, brightness, contrast, saturation])
 
   const handleDownload = useCallback(async (format: 'png' | 'jpeg' | 'webp') => {
     if (!editedImage) return
@@ -106,6 +120,12 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
       alert('下载失败')
     }
   }, [editedImage])
+
+  const handleReset = useCallback(() => {
+    setBrightness(100)
+    setContrast(100)
+    setSaturation(100)
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -126,6 +146,12 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
       ) : (
         <div className="space-y-6">
           <div className="bg-gray-800 rounded-lg p-6">
+            <h3 className="font-semibold mb-3 flex items-center justify-between">
+              <span>实时预览</span>
+              {(brightness !== 100 || contrast !== 100 || saturation !== 100) && (
+                <span className="text-sm text-blue-400">已应用滤镜效果</span>
+              )}
+            </h3>
             <img src={editedImage || selectedImage} alt="编辑中" className="max-w-full mx-auto rounded-lg" />
           </div>
 
@@ -136,7 +162,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                 <button
                   onClick={handleRotate}
                   disabled={loading}
-                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <RotateCw className="w-4 h-4" />
                   旋转90°
@@ -144,7 +170,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                 <button
                   onClick={handleFlipHorizontal}
                   disabled={loading}
-                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <FlipHorizontal className="w-4 h-4" />
                   水平翻转
@@ -152,7 +178,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                 <button
                   onClick={handleFlipVertical}
                   disabled={loading}
-                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   <FlipVertical className="w-4 h-4" />
                   垂直翻转
@@ -161,7 +187,15 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">滤镜调整</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">滤镜调整（实时预览）</h3>
+                <button
+                  onClick={handleReset}
+                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  重置滤镜
+                </button>
+              </div>
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
@@ -174,7 +208,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                     max="200"
                     value={brightness}
                     onChange={(e) => setBrightness(Number(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-500"
                   />
                 </div>
                 <div>
@@ -188,7 +222,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                     max="200"
                     value={contrast}
                     onChange={(e) => setContrast(Number(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-500"
                   />
                 </div>
                 <div>
@@ -202,16 +236,9 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                     max="200"
                     value={saturation}
                     onChange={(e) => setSaturation(Number(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-500"
                   />
                 </div>
-                <button
-                  onClick={applyFilters}
-                  disabled={loading}
-                  className="w-full px-4 py-2 bg-purple-500 rounded-lg hover:bg-purple-600 transition-colors"
-                >
-                  应用滤镜
-                </button>
               </div>
             </div>
 

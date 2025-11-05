@@ -1,2 +1,42 @@
 2025/11/04-06:32:13.092 146 Creating DB /workspace/browser/user_data/Default/shared_proto_db since it was missing.
 2025/11/04-06:32:13.185 146 Reusing MANIFEST /workspace/browser/user_data/Default/shared_proto_db/MANIFEST-000001
+2025/11/04-08:18:10.259 144 Level-0 table #5: started
+2025/11/04-08:18:10.543 144 Level-0 table #5: 15685663 bytes OK
+2025/11/04-08:18:10.644 144 Delete type=0 #3
+2025/11/04-08:18:11.054 144 Level-0 table #7: started
+2025/11/04-08:18:11.197 144 Level-0 table #7: 15675408 bytes OK
+2025/11/04-08:18:11.243 144 Delete type=0 #4
+2025/11/04-08:18:11.249 144 Compacting 1@1 + 1@2 files
+2025/11/04-08:18:11.447 144 Generated table #8@1: 2 keys, 15675427 bytes
+2025/11/04-08:18:11.468 144 Generated table #9@1: 60 keys, 6492 bytes
+2025/11/04-08:18:11.468 144 Compacted 1@1 + 1@2 files => 15681919 bytes
+2025/11/04-08:18:11.475 144 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/11/04-08:18:11.544 144 Delete type=2 #5
+2025/11/04-08:18:11.544 144 Delete type=2 #7
+2025/11/04-08:26:20.415 144 Level-0 table #11: started
+2025/11/04-08:26:20.486 144 Level-0 table #11: 15675435 bytes OK
+2025/11/04-08:26:20.500 144 Delete type=0 #6
+2025/11/04-08:26:20.506 144 Compacting 1@1 + 1@2 files
+2025/11/04-08:26:20.785 144 Generated table #12@1: 2 keys, 15675454 bytes
+2025/11/04-08:26:20.785 144 Compacted 1@1 + 1@2 files => 15675454 bytes
+2025/11/04-08:26:20.792 144 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/11/04-08:26:20.798 144 Delete type=2 #8
+2025/11/04-08:26:20.799 144 Delete type=2 #11
+2025/11/04-08:38:26.656 144 Level-0 table #14: started
+2025/11/04-08:38:27.149 144 Level-0 table #14: 52083491 bytes OK
+2025/11/04-08:38:27.251 144 Delete type=0 #10
+2025/11/04-08:38:27.337 144 Compacting 1@1 + 2@2 files
+2025/11/04-08:38:28.845 144 Generated table #15@1: 2 keys, 52016619 bytes
+2025/11/04-08:38:28.846 144 Level-0 table #17: started
+2025/11/04-08:38:29.352 144 Level-0 table #17: 52016752 bytes OK
+2025/11/04-08:38:29.436 144 Delete type=0 #13
+2025/11/04-08:38:29.586 144 Generated table #18@1: 1 keys, 15675435 bytes
+2025/11/04-08:38:29.659 144 Generated table #19@1: 64 keys, 28277 bytes
+2025/11/04-08:38:29.659 144 Compacted 1@1 + 2@2 files => 67720331 bytes
+2025/11/04-08:38:29.665 144 compacted to: files[ 1 0 3 0 0 0 0 ]
+2025/11/04-08:38:29.672 144 Delete type=2 #9
+2025/11/04-08:38:29.672 144 Delete type=2 #12
+2025/11/04-08:38:29.672 144 Delete type=2 #14
+2025/11/04-08:44:27.620 145 Level-0 table #21: started
+2025/11/04-08:44:27.923 145 Level-0 table #21: 52016779 bytes OK
+2025/11/04-08:44:27.938 145 Delete type=0 #16
