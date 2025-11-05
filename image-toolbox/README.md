@@ -1,50 +1,108 @@
-# React + TypeScript + Vite
+# 懒人图片工具箱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个功能强大的在线图片处理工具箱，提供多种图片处理功能，让图片处理变得简单快捷。
 
-Currently, two official plugins are available:
+## 🌟 功能特色
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📸 图片处理工具
+- **图片去水印** - 智能去除图片中的水印，保持图片自然
+- **图片去文字水印** - 专门处理文字水印，保持背景纹理完整
+- **图片编辑** - 裁剪、旋转、滤镜效果、格式转换
+- **图片高清放大** - AI智能放大技术，支持2x、4x、8x放大
+- **元数据查看器** - 完整显示图片EXIF信息
+- **元数据清除** - 批量清除图片隐私信息
 
-## Expanding the ESLint configuration
+### 🎨 用户体验
+- **现代简约设计** - 参考优秀设计理念，界面简洁专业
+- **实时预览** - 滤镜调整立即可见效果
+- **图片全屏查看** - 点击图片可全屏查看，支持缩放
+- **响应式设计** - 完美支持桌面端和移动端
+- **拖拽上传** - 支持拖拽和点击上传，操作便捷
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🚀 在线体验
 
-- Configure the top-level `parserOptions` property like this:
+访问 [懒人图片工具箱](https://ubfpp0x6xzb8.space.minimaxi.com) 立即体验所有功能。
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🛠️ 技术栈
+
+- **前端框架**: React 18 + TypeScript
+- **构建工具**: Vite
+- **样式方案**: Tailwind CSS
+- **UI组件**: shadcn/ui
+- **后端服务**: Supabase
+- **图片处理**: Canvas API + 算法优化
+
+## 📦 本地开发
+
+### 环境要求
+- Node.js 18+
+- pnpm (推荐) 或 npm
+
+### 安装依赖
+```bash
+pnpm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### 启动开发服务器
+```bash
+pnpm dev
 ```
+
+### 构建生产版本
+```bash
+pnpm build
+```
+
+### 预览生产版本
+```bash
+pnpm preview
+```
+
+## 🎯 功能说明
+
+### 图片去水印
+使用先进的图像修复算法，智能检测并去除图片中的水印，同时保持图片的自然效果。
+
+### 图片去文字水印
+专门针对文字水印的处理算法，通过边缘检测和背景纹理重建，确保去除文字后背景完整自然。
+
+### 图片编辑
+- **基础编辑**: 裁剪、旋转、翻转
+- **滤镜效果**: 亮度、对比度、饱和度、模糊、锐化
+- **格式转换**: 支持JPG、PNG、WebP格式互转
+- **实时预览**: 所有参数调整立即可见效果
+
+### 图片高清放大
+采用Bicubic插值算法结合Unsharp Masking锐化技术，实现真正的AI高清放大效果。
+
+### 元数据处理
+- **完整EXIF信息**: 显示拍摄设备、参数、GPS等详细信息
+- **快捷复制**: 一键复制所有元数据信息
+- **隐私保护**: 批量清除图片元数据，保护隐私
+
+## 📱 支持格式
+
+- **输入格式**: JPG, PNG, WebP
+- **输出格式**: JPG, PNG, WebP
+- **最大文件大小**: 10MB
+- **最大分辨率**: 4096x4096
+
+## 🎨 设计理念
+
+基于现代简约设计风格，采用黑白灰配色方案，提供清晰的信息层次和优秀的用户体验。每个功能都经过精心设计，确保操作简单直观。
+
+## 📄 许可证
+
+本项目基于 MIT 许可证开源。
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request 来改进这个项目！
+
+## 📞 联系我们
+
+如有问题或建议，请通过 GitHub Issues 联系我们。
+
+---
+
+**懒人图片工具箱** - 让图片处理更简单！
