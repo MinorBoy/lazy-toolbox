@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Additional ignore patterns
+.memory/
+.browser_screenshots/
+tmp/
