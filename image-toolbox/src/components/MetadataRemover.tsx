@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Upload, Download, CheckCircle } from 'lucide-react'
 import { fileToBase64, removeImageMetadata, downloadImage } from '../utils/imageProcessing'
+import ImageFullscreenViewer from './ImageFullscreenViewer'
 
 interface MetadataRemoverProps {
   onComplete?: () => void
@@ -10,6 +11,8 @@ const MetadataRemover: React.FC<MetadataRemoverProps> = ({ onComplete }) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
   const [processedImages, setProcessedImages] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
+  const [fullscreenIndex, setFullscreenIndex] = useState(0)
 
   const handleFileInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -84,7 +87,12 @@ const MetadataRemover: React.FC<MetadataRemoverProps> = ({ onComplete }) => {
                   key={index}
                   src={image}
                   alt={`图片 ${index + 1}`}
-                  className="w-full aspect-square object-cover rounded-lg"
+                  className="w-full aspect-square object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => {
+                    setFullscreenImage(image)
+                    setFullscreenIndex(index)
+                  }}
+                  title="点击查看全屏"
                 />
               ))}
             </div>
@@ -124,6 +132,20 @@ const MetadataRemover: React.FC<MetadataRemoverProps> = ({ onComplete }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* 全屏查看器 */}
+      {fullscreenImage && (
+        <ImageFullscreenViewer
+          imageUrl={fullscreenImage}
+          onClose={() => setFullscreenImage(null)}
+          images={selectedImages}
+          currentIndex={fullscreenIndex}
+          onNavigate={(index) => {
+            setFullscreenIndex(index)
+            setFullscreenImage(selectedImages[index])
+          }}
+        />
       )}
     </div>
   )

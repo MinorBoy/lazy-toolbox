@@ -10,6 +10,7 @@ import {
   adjustImageSaturation,
   convertImageFormat,
 } from '../utils/imageProcessing'
+import ImageFullscreenViewer from './ImageFullscreenViewer'
 
 interface ImageEditorProps {
   onComplete?: () => void
@@ -22,6 +23,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
   const [contrast, setContrast] = useState(100)
   const [saturation, setSaturation] = useState(100)
   const [loading, setLoading] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   const handleFileInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -152,7 +154,13 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
                 <span className="text-sm text-blue-400">已应用滤镜效果</span>
               )}
             </h3>
-            <img src={editedImage || selectedImage} alt="编辑中" className="max-w-full mx-auto rounded-lg" />
+            <img 
+              src={editedImage || selectedImage} 
+              alt="编辑中" 
+              className="max-w-full mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
+              onClick={() => setIsFullscreen(true)}
+              title="点击查看全屏"
+            />
           </div>
 
           <div className="bg-gray-800 rounded-lg p-6 space-y-6">
@@ -283,6 +291,14 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ onComplete }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* 全屏查看器 */}
+      {isFullscreen && editedImage && (
+        <ImageFullscreenViewer
+          imageUrl={editedImage}
+          onClose={() => setIsFullscreen(false)}
+        />
       )}
     </div>
   )

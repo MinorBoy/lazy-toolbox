@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Upload, Download, Info, Type } from 'lucide-react'
 import { fileToBase64, downloadImage, removeTextWatermark } from '../utils/imageProcessing'
+import ImageFullscreenViewer from './ImageFullscreenViewer'
 
 interface TextWatermarkRemoverProps {
   onComplete?: () => void
@@ -11,6 +12,7 @@ const TextWatermarkRemover: React.FC<TextWatermarkRemoverProps> = ({ onComplete 
   const [processedImage, setProcessedImage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   const handleFileInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -82,12 +84,24 @@ const TextWatermarkRemover: React.FC<TextWatermarkRemoverProps> = ({ onComplete 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-800 rounded-lg p-4">
               <h3 className="font-semibold mb-3">原始图片</h3>
-              <img src={selectedImage} alt="原始图片" className="w-full rounded-lg" />
+              <img 
+                src={selectedImage} 
+                alt="原始图片" 
+                className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
+                onClick={() => setFullscreenImage(selectedImage)}
+                title="点击查看全屏"
+              />
             </div>
             {processedImage && (
               <div className="bg-gray-800 rounded-lg p-4">
                 <h3 className="font-semibold mb-3">处理后</h3>
-                <img src={processedImage} alt="处理后" className="w-full rounded-lg" />
+                <img 
+                  src={processedImage} 
+                  alt="处理后" 
+                  className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => setFullscreenImage(processedImage)}
+                  title="点击查看全屏"
+                />
               </div>
             )}
           </div>
@@ -123,6 +137,17 @@ const TextWatermarkRemover: React.FC<TextWatermarkRemoverProps> = ({ onComplete 
             </button>
           </div>
         </div>
+      )}
+
+      {/* 全屏查看器 */}
+      {fullscreenImage && (
+        <ImageFullscreenViewer
+          imageUrl={fullscreenImage}
+          onClose={() => setFullscreenImage(null)}
+          images={processedImage ? [selectedImage!, processedImage] : [selectedImage!]}
+          currentIndex={fullscreenImage === selectedImage ? 0 : 1}
+          onNavigate={(index) => setFullscreenImage(index === 0 ? selectedImage : processedImage)}
+        />
       )}
     </div>
   )

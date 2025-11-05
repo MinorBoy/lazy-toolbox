@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Upload, Image as ImageIcon, Wand2, ZoomIn, Info, XCircle, Type } from 'lucide-react'
-import ImageUpload from './components/ImageUpload'
+import { Image as ImageIcon, Wand2, ZoomIn, Info, XCircle, Type } from 'lucide-react'
 import WatermarkRemover from './components/WatermarkRemover'
 import TextWatermarkRemover from './components/TextWatermarkRemover'
 import ImageEditor from './components/ImageEditor'
@@ -65,15 +64,9 @@ const tools: ToolConfig[] = [
 
 function App() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null)
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
-
-  const handleImageUpload = useCallback((imageData: string) => {
-    setUploadedImage(imageData)
-  }, [])
 
   const handleToolComplete = useCallback(() => {
     setSelectedTool(null)
-    setUploadedImage(null)
   }, [])
 
   return (
@@ -93,7 +86,6 @@ function App() {
               <button
                 onClick={() => {
                   setSelectedTool(null)
-                  setUploadedImage(null)
                 }}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
               >
@@ -114,10 +106,6 @@ function App() {
               <p className="text-gray-400 text-lg">
                 选择下方工具开始处理您的图片
               </p>
-            </div>
-
-            <div className="mb-12">
-              <ImageUpload onImageUpload={handleImageUpload} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

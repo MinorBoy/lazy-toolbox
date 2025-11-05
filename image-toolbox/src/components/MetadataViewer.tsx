@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Upload, Info, Camera, Copy, Check, MapPin } from 'lucide-react'
+import { Upload, Info, Camera, Copy, Check, MapPin, User, FileText, Settings } from 'lucide-react'
 import { fileToBase64 } from '../utils/imageProcessing'
 import { useToast } from '../hooks/use-toast'
+import ImageFullscreenViewer from './ImageFullscreenViewer'
 import exifr from 'exifr'
 
 interface MetadataViewerProps {
@@ -26,6 +27,7 @@ const MetadataViewer: React.FC<MetadataViewerProps> = ({ onComplete }) => {
   const [exifData, setExifData] = useState<ExifData | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const { toast } = useToast()
 
   const handleFileInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +167,14 @@ const MetadataViewer: React.FC<MetadataViewerProps> = ({ onComplete }) => {
       ) : (
         <div className="space-y-6">
           <div className="bg-gray-800 rounded-lg p-6">
-            <img src={selectedImage} alt="预览" className="max-w-md mx-auto rounded-lg" />
+            <img 
+              src={selectedImage} 
+              alt="预览" 
+              className="max-w-md mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
+              onClick={() => setIsFullscreen(true)}
+              title="点击查看全屏"
+            />
+            <p className="text-center text-sm text-gray-400 mt-2">点击图片查看全屏</p>
           </div>
 
           {/* 基本信息 */}
@@ -238,6 +247,64 @@ const MetadataViewer: React.FC<MetadataViewerProps> = ({ onComplete }) => {
                 {exifData.latitude && <MetadataRow label="纬度" value={String(exifData.latitude)} fieldKey="latitude" />}
                 {exifData.longitude && <MetadataRow label="经度" value={String(exifData.longitude)} fieldKey="longitude" />}
                 {exifData.GPSAltitude && <MetadataRow label="海拔" value={`${exifData.GPSAltitude}m`} fieldKey="GPSAltitude" />}
+                {exifData.GPSSpeed && <MetadataRow label="速度" value={`${exifData.GPSSpeed} km/h`} fieldKey="GPSSpeed" />}
+                {exifData.GPSImgDirection && <MetadataRow label="拍摄方向" value={`${exifData.GPSImgDirection}°`} fieldKey="GPSImgDirection" />}
+              </div>
+            </div>
+          )}
+
+          {/* 版权和作者信息 */}
+          {exifData && (exifData.Copyright || exifData.Artist || exifData.Creator || exifData.Author) && (
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <User className="w-5 h-5 text-cyan-400" />
+                版权和作者信息
+              </h3>
+              <div className="space-y-1">
+                {exifData.Copyright && <MetadataRow label="版权" value={String(exifData.Copyright)} fieldKey="Copyright" />}
+                {exifData.Artist && <MetadataRow label="艺术家/作者" value={String(exifData.Artist)} fieldKey="Artist" />}
+                {exifData.Creator && <MetadataRow label="创建者" value={String(exifData.Creator)} fieldKey="Creator" />}
+                {exifData.Author && <MetadataRow label="作者" value={String(exifData.Author)} fieldKey="Author" />}
+                {exifData.Rights && <MetadataRow label="权利声明" value={String(exifData.Rights)} fieldKey="Rights" />}
+                {exifData.OwnerName && <MetadataRow label="所有者" value={String(exifData.OwnerName)} fieldKey="OwnerName" />}
+              </div>
+            </div>
+          )}
+
+          {/* 相机设置信息 */}
+          {exifData && (exifData.MeteringMode || exifData.SceneCaptureType || exifData.ExposureProgram || exifData.ExposureBiasValue) && (
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Settings className="w-5 h-5 text-indigo-400" />
+                相机设置信息
+              </h3>
+              <div className="space-y-1">
+                {exifData.ExposureProgram !== undefined && <MetadataRow label="曝光程序" value={String(exifData.ExposureProgram)} fieldKey="ExposureProgram" />}
+                {exifData.MeteringMode !== undefined && <MetadataRow label="测光模式" value={String(exifData.MeteringMode)} fieldKey="MeteringMode" />}
+                {exifData.ExposureBiasValue !== undefined && <MetadataRow label="曝光补偿" value={`${exifData.ExposureBiasValue} EV`} fieldKey="ExposureBiasValue" />}
+                {exifData.SceneCaptureType !== undefined && <MetadataRow label="场景模式" value={String(exifData.SceneCaptureType)} fieldKey="SceneCaptureType" />}
+                {exifData.LightSource !== undefined && <MetadataRow label="光源" value={String(exifData.LightSource)} fieldKey="LightSource" />}
+                {exifData.SensingMethod !== undefined && <MetadataRow label="感光方式" value={String(exifData.SensingMethod)} fieldKey="SensingMethod" />}
+                {exifData.DigitalZoomRatio !== undefined && <MetadataRow label="数码变焦" value={String(exifData.DigitalZoomRatio)} fieldKey="DigitalZoomRatio" />}
+                {exifData.MaxApertureValue !== undefined && <MetadataRow label="最大光圈" value={`f/${exifData.MaxApertureValue}`} fieldKey="MaxApertureValue" />}
+                {exifData.FocalLengthIn35mmFormat && <MetadataRow label="等效35mm焦距" value={`${exifData.FocalLengthIn35mmFormat}mm`} fieldKey="FocalLengthIn35mmFormat" />}
+              </div>
+            </div>
+          )}
+
+          {/* 图像描述和注释 */}
+          {exifData && (exifData.ImageDescription || exifData.UserComment || exifData.Subject || exifData.Keywords) && (
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-yellow-400" />
+                图像描述和注释
+              </h3>
+              <div className="space-y-1">
+                {exifData.ImageDescription && <MetadataRow label="图像描述" value={String(exifData.ImageDescription)} fieldKey="ImageDescription" />}
+                {exifData.UserComment && <MetadataRow label="用户注释" value={String(exifData.UserComment)} fieldKey="UserComment" />}
+                {exifData.Subject && <MetadataRow label="主题" value={String(exifData.Subject)} fieldKey="Subject" />}
+                {exifData.Keywords && <MetadataRow label="关键词" value={formatExifValue(exifData.Keywords)} fieldKey="Keywords" />}
+                {exifData.Caption && <MetadataRow label="标题" value={String(exifData.Caption)} fieldKey="Caption" />}
               </div>
             </div>
           )}
@@ -291,6 +358,14 @@ const MetadataViewer: React.FC<MetadataViewerProps> = ({ onComplete }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* 全屏查看器 */}
+      {isFullscreen && selectedImage && (
+        <ImageFullscreenViewer
+          imageUrl={selectedImage}
+          onClose={() => setIsFullscreen(false)}
+        />
       )}
     </div>
   )
